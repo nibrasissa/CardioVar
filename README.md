@@ -1,4 +1,4 @@
-# CardioVar — Working Demo (20250907_070933)
+# CardioVar_v1
 
 This bundle runs out of the box using a built-in *BaselineModel* if no trained model is provided.
 You can still point to your own `*_best_model.joblib` later via env vars.
