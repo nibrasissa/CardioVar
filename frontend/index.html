@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>CardioVar — Variant Pathogenicity</title>
+  <link rel="stylesheet" href="/static/assets/style.css"/>
+  <link rel="icon" href="/static/assets/cardiovar_logo.png">
+  <script defer src="/static/assets/app.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="container masthead-inner">
+      <img class="logo" src="/static/assets/cardiovar_logo.png" alt="CardioVar logo"/>
+      <div class="brand-text">
+        <div class="title"><span style="color:#BFC4C8">CARDIO</span><span style="color:#C23A2B">VAR</span></div>
+        <div class="subtitle">Pathogenicity scoring for inherited cardiac disease</div>
+      </div>
+      <nav class="mastnav">
+        <a href="#upload">Upload</a>
+        <a href="#triage">Thresholds</a>
+        <a href="#cal">Calibration</a>
+        <a href="/docs" target="_blank" rel="noopener">API</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container content">
+    <section id="upload" class="card">
+      <h2>Upload &amp; Run CardioVar</h2>
+      <div class="grid two">
+        <div>
+          <label class="label">Variant file (CSV/TSV)</label>
+          <input id="file" type="file" accept=".csv,.tsv"/>
+          <div class="muted small">Template: <a href="/files/example_variants.csv" download>example_variants.csv</a></div>
+        </div>
+        <div>
+          <label class="label">API Key (optional)</label>
+          <input id="api_key" type="password" placeholder="API key if enabled"/>
+        </div>
+      </div>
+      <div class="row">
+        <button id="run_btn" class="btn primary" onclick="score()">Run CardioVar</button>
+        <button class="btn" onclick="health()">Check server</button>
+        <span id="server_status" class="muted"></span>
+      </div>
+
+      <div id="progress" class="progress" hidden aria-live="polite">
+        <div class="bar"><div id="prog_bar"></div></div>
+        <span id="prog_label" class="muted">Waiting…</span>
+      </div>
+
+      <div id="pred_card" class="card" hidden>
+        <div class="row between"><strong>Predictions (preview)</strong><div id="dl"></div></div>
+        <div id="pred_table" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <section id="triage" class="card">
+      <h2>Triage thresholds</h2>
+      <div class="row">
+        <label class="label">Low:</label>
+        <input id="low_thr" type="number" step="0.01" min="0" max="1" value="0.30" style="width:100px"/>
+        <label class="label">High:</label>
+        <input id="high_thr" type="number" step="0.01" min="0" max="1" value="0.70" style="width:100px"/>
+        <button class="btn primary" onclick="saveThr()">Save</button>
+        <span id="thr_msg" class="muted"></span>
+      </div>
+      <p class="muted">CSV will include <code>CardioVar_label_name</code> using mapping (e.g., <code>0:not candidate,1:candidate</code>).</p>
+    </section>
+
+    <section id="cal" class="card">
+      <h2>Calibration</h2>
+      <p class="muted">Upload a scored CSV (must include <code>CardioVar_probability</code> and <code>target</code>)</p>
+      <input id="cal_file" type="file" accept=".csv,.tsv"/>
+      <div class="row">
+        <button class="btn" onclick="calibrate()">Run calibration</button>
+        <span id="cal_msg" class="muted"></span>
+      </div>
+      <div id="cal_metrics" class="muted" style="margin-top:10px"></div>
+      <img id="cal_img" style="margin-top:10px; max-width:640px; display:none" />
+    </section>
+  </main>
+
+  <div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
+
+  <footer class="footer"><div class="container footer-inner">
+    <div class="muted">© <span id="year"></span> CardioVar</div>
+    <div class="muted">FastAPI • v2.4</div>
+  </div></footer>
+</body>
+</html>
